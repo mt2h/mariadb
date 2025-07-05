@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:10.6.20
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: myrootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+      MYSQL_INITDB_SKIP_TZINFO: "1"
+    volumes:
+      #- ./mariadb/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - "3336:3306"
+
+volumes:
+  mariadb_data:
