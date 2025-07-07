@@ -37,3 +37,33 @@ https://mariadb.com/kb/en/configuring-mariadb-with-option-files/
 
 - Binary Log documentation:
 https://mariadb.com/kb/en/binary-log/
+
+
+## User permissio management
+
+```sql
+show grants;
+show grants for current_user;
+show grants for myuser;
+
+grant select on mydatabase.* to 'myuser'@'localhost';
+grant select, insert on mydatabase.mytable to 'myuser'@'localhost';
+grant execute on procedure mysql.create_db to 'user1'@'host';
+
+revoke select on database1.table1 from 'username'@'localhost';
+
+select current_user();
+
+alter user 'root'@'localhost' identified by '12345678';
+create user 'tom'@'localhost' identified by '1234';
+
+create database db1;
+create table db1.tab1 (txt text);
+insert into db1.tab1 values ('hello');
+grant select on db1.tab1 to 'tom'@'localhost';
+grant create on db1.* to 'tom'@'localhost';
+grant update on db1.tab1 to 'tom'@'localhost' with grant option; --delegate same privileges another user
+show grants for 'tom'@'localhost';
+drop user 'tom'@'localhost';
+drop database db1;
+```
