@@ -11,7 +11,7 @@ services:
       MYSQL_PASSWORD: mypassword
       MYSQL_INITDB_SKIP_TZINFO: "1"
     volumes:
-      #- ./mariadb/custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
+      - ./custom.cnf:/etc/mysql/conf.d/custom.cnf:ro
       - mariadb_data:/var/lib/mysql
     ports:
       - "3336:3306"

@@ -28,3 +28,9 @@ https://mariadb.com/kb/en/configuring-mariadb-with-option-files/
 
 - Binary Log documentation:
 https://mariadb.com/kb/en/binary-log/
+
+## Binlog
+
+```bash
+mariadb-binlog /var/lib/mysql/mariadb-bin.000001
+```
