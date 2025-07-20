@@ -98,15 +98,15 @@ collation-server      = utf8mb4_general_ci
 #
 # * InnoDB
 #
-innodb_file_per_table = 1 # [BY DEFAULT LASTED VERSIONS]
-innodb_status_output = 1
-innodb_status_output_locks = 1
 
 # InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.
 # Read the manual for more InnoDB related options. There are many!
 # Most important is to give InnoDB 80 % of the system RAM for buffer use:
 # https://mariadb.com/kb/en/innodb-system-variables/#innodb_buffer_pool_size
-#innodb_buffer_pool_size = 8G
+innodb_buffer_pool_size = 128M #[BEFORE IN EXAMPLE WAS 8G]
+innodb_file_per_table = 1 # [BY DEFAULT LASTED VERSIONS]
+innodb_status_output = 1
+innodb_status_output_locks = 1
 
 # this is only for embedded server
 [embedded]
