@@ -1,0 +1,1 @@
+create table company.emp2 like company.emp;
