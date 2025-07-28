@@ -46,6 +46,7 @@ END //
 
 DELIMITER ;
 
+-- Call the function to get the family name
 SELECT company.reFamilyName(1);
 
 -- Event Scheduler: Create an event to clean up old logs
