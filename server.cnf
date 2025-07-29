@@ -19,6 +19,15 @@ basedir                 = /usr
 #datadir                 = /var/lib/mysql
 #tmpdir                  = /tmp
 
+#
+# * Audit
+#
+plugin_load_add         = server_audit
+server_audit            = force_plus_permanent
+server_audit_logging    = ON
+server_audit_events     = CONNECT,QUERY,TABLE #,QUERY_DDL,QUERY_DML
+server_audit_file_path  = /var/lib/mysql/server_audit.log
+
 # Broken reverse DNS slows down connections considerably and name resolve is
 # safe to skip if there are no "host by domain name" access grants
 #skip-name-resolve
