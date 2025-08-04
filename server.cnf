@@ -37,6 +37,11 @@ server_audit_file_path  = /var/lib/mysql/server_audit.log
 #bind-address            = 127.0.0.1
 
 #
+# * Performance Schema
+#
+performance_schema      = ON
+
+#
 # * Fine Tuning
 #
 
