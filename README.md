@@ -101,3 +101,9 @@ chown -R mysql:mysql /var/lib/mysql
 # It saves only the data that has changed since the last backup into the /01_09 directory.
 mariabackup --backup --target-dir=/01_09 --incremental-basedir=01_08/ --user mariabackup --password 123456
 ```
+
+## Encripted
+
+```bash
+(echo -n "1;" ; openssl rand -hex 32) >> keyfile
+```

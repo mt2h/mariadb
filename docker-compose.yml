@@ -13,6 +13,7 @@ services:
     volumes:
       - ./server.cnf:/etc/mysql/conf.d/server.cnf:ro
       - mariadb_data:/var/lib/mysql
+      - ./keyfile:/etc/mysql/keyfile:ro
     ports:
       - "3336:3306"
 
