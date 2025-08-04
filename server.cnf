@@ -135,3 +135,9 @@ lower_case_table_names = 0 # [BY DEFAULT IS OFF]
 # If you use the same .cnf file for MariaDB of different versions,
 # use this group for options that older servers don't understand
 [mariadb-10.6]
+#
+# * Encryption
+#
+plugin_load_add                             = file_key_management
+file_key_management_encryption_algorithm    = AES_CTR
+file_key_management_filename                = /etc/mysql/keyfile
