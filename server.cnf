@@ -95,10 +95,10 @@ binlog_format          = MIXED
 
 # For documentation, please read
 # https://mariadb.com/kb/en/securing-connections-for-client-and-server/
-#ssl-ca = /etc/mysql/cacert.pem
-#ssl-cert = /etc/mysql/server-cert.pem
-#ssl-key = /etc/mysql/server-key.pem
-#require-secure-transport = on
+ssl-ca=/etc/mysql/ssl/ca-cert.pem
+ssl-cert=/etc/mysql/ssl/server-cert.pem
+ssl-key=/etc/mysql/ssl/server-key.pem
+require_secure_transport = ON
 
 #
 # * Character sets
