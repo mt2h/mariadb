@@ -130,14 +130,14 @@ innodb_status_output_locks = 1
 # you can put MariaDB-only options here
 [mariadb]
 lower_case_table_names = 0 # [BY DEFAULT IS OFF]
-
-# This group is only read by MariaDB-10.6 servers.
-# If you use the same .cnf file for MariaDB of different versions,
-# use this group for options that older servers don't understand
-[mariadb-10.6]
 #
 # * Encryption
 #
 plugin_load_add                             = file_key_management
 file_key_management_encryption_algorithm    = AES_CTR
 file_key_management_filename                = /etc/mysql/keyfile
+
+# This group is only read by MariaDB-10.6 servers.
+# If you use the same .cnf file for MariaDB of different versions,
+# use this group for options that older servers don't understand
+[mariadb-10.6]

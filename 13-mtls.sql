@@ -21,6 +21,6 @@ alter user 'test_user'@'%' require x509;
 -- copy clients files from server to client:
 scp root@node1:/etc/mysql/ssl/client*.pem /etc/mysql/ssl/
 
-add these lines to the client configuration file under mariadb-client tag:
+-- add these lines to the client configuration file under mariadb-client tag:
 ssl-cert=/etc/mysql/ssl/client-cert.pem
 ssl-key=/etc/mysql/ssl/client-key.pem
