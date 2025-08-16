@@ -107,3 +107,13 @@ mariabackup --backup --target-dir=/01_09 --incremental-basedir=01_08/ --user mar
 ```bash
 (echo -n "1;" ; openssl rand -hex 32) >> keyfile
 ```
+
+## Replication
+
+```bash
+mariadb -u root -p -S /var/lib/mysql/mysql.sock
+```
+
+```sql
+SELECT User, Host FROM mysql.user WHERE User='replicator';
+```

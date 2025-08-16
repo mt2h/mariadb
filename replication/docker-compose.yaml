@@ -1,0 +1,97 @@
+version: '3.9'
+
+services:
+  node1:
+    build: .
+    container_name: node1
+    networks:
+      mariadb_network:
+        ipv4_address: 10.1.0.10
+    environment:
+      MYSQL_ROOT_PASSWORD: node1
+    volumes:
+      - ./node1.cnf:/etc/mysql/conf.d/server.cnf:ro
+      - node1_data:/data
+      - node1_log:/log
+      - node1_backup:/backup
+      - node1_tools:/tools
+    ports:
+      - "3336:3306"
+    cap_add:
+      - SYS_TIME
+
+  #node2:
+    #image: mariadb:10.6.20
+    #container_name: node2
+    #networks:
+    #  mariadb_network:
+    #    ipv4_address: 10.1.0.20
+    #environment:
+    #  MYSQL_ROOT_PASSWORD: myrootpassword
+    #  MYSQL_DATABASE: mydatabase
+    #  MYSQL_USER: myuser
+    #  MYSQL_PASSWORD: mypassword
+    #  MYSQL_INITDB_SKIP_TZINFO: "1"
+    #volumes:
+    #  - ./server.cnf:/etc/mysql/conf.d/server.cnf:ro
+    #  - mariadb_data:/var/lib/mysql
+    #  - ./keyfile:/etc/mysql/keyfile:ro
+    #  - ./ssl:/etc/mysql/ssl:ro
+    #ports:
+    #  - "3336:3306"
+
+  #maxscale:
+    #image: mariadb:10.6.20
+    #container_name: maxscale
+    #networks:
+    #  mariadb_network:
+    #    ipv4_address: 10.1.0.50
+    #environment:
+    #  MYSQL_ROOT_PASSWORD: myrootpassword
+    #  MYSQL_DATABASE: mydatabase
+    #  MYSQL_USER: myuser
+    #  MYSQL_PASSWORD: mypassword
+    #  MYSQL_INITDB_SKIP_TZINFO: "1"
+    #volumes:
+    #  - ./server.cnf:/etc/mysql/conf.d/server.cnf:ro
+    #  - mariadb_data:/var/lib/mysql
+    #  - ./keyfile:/etc/mysql/keyfile:ro
+    #  - ./ssl:/etc/mysql/ssl:ro
+    #ports:
+    #  - "3336:3306"
+
+  #monitoring:
+    #image: mariadb:10.6.20
+    #container_name: monitoring
+    #networks:
+    #  mariadb_network:
+    #    ipv4_address: 10.1.0.60
+    #environment:
+    #  MYSQL_ROOT_PASSWORD: myrootpassword
+    #  MYSQL_DATABASE: mydatabase
+    #  MYSQL_USER: myuser
+    #  MYSQL_PASSWORD: mypassword
+    #  MYSQL_INITDB_SKIP_TZINFO: "1"
+    #volumes:
+    #  - ./server.cnf:/etc/mysql/conf.d/server.cnf:ro
+    #  - mariadb_data:/var/lib/mysql
+    #  - ./keyfile:/etc/mysql/keyfile:ro
+    #  - ./ssl:/etc/mysql/ssl:ro
+    #ports:
+    #  - "3336:3306"
+
+volumes:
+  node1_data:
+  node1_log:
+  node1_backup:
+  node1_tools:
+  #node2_data:
+  #max_scale_data:
+  #mon_data:
+
+networks:
+  mariadb_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.1.0.0/24

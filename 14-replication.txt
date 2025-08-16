@@ -1,0 +1,96 @@
+On Node 1 and 2:
+
+mkdir /var/log/mariadb
+mkdir /log/binlog
+mkdir /log/relaylog
+
+chown -R mysql:mysql /data
+chown -R mysql:mysql /var/log/mariadb
+chown -R mysql:mysql /backup
+chown -R mysql:mysql /log
+
+cp -RTp /var/lib/mysql /data
+##################################
+
+On Node 1 (Master) add these lines to the server.cnf:
+
+vim /etc/my.cnf.d/server.cnf
+
+datadir =                   /data/
+log-bin = /log/binlog/mariadb-bin.log
+log_error =                 /var/log/mariadb/mariadb.log
+socket =                    /var/lib/mysql/mysql.sock
+innodb_buffer_pool_size =   1G
+innodb_flush_method =       O_DIRECT
+innodb_file_per_table =     1
+innodb_data_home_dir =      /data
+innodb_open_files =         65530
+lower_case_table_name =     1
+
+
+
+##################################
+
+On Node 1 (slave) add these lines to the server.cnf:
+
+vim /etc/my.cnf.d/server.cnf
+
+datadir =                   /data/
+log_error =                 /var/log/mariadb/mariadb.log
+socket =                    /var/lib/mysql/mysql.sock
+innodb_buffer_pool_size =   1G
+innodb_flush_method =       O_DIRECT
+innodb_file_per_table =     1
+innodb_data_home_dir =      /data
+innodb_open_files =         65530
+lower_case_table_name =     1
+
+
+###################################
+###################################
+
+
+Master Slave Replication:
+Warning: 
+If you already have a running and active Master database with data,
+before starting your replication you have to initialize your slave server
+with a complete dump from your master server. for this you need a mysqldump
+or a backup from your master database.
+
+
+
+
+###################################
+###################################
+
+in MariaDB on Master:
+
+
+CREATE USER 'replicator'@'%' IDENTIFIED BY 'password';
+GRANT REPLICATION SLAVE ON *.* TO 'replicator'@'%';
+
+###################################
+
+On Master:
+
+sudo firewall-cmd --add-rich-rule='rule family="ipv4" source address="10.1.0.20" port protocol="tcp" port="3306" accept' --permanent
+sudo firewall-cmd --reload
+
+###################################
+
+in MariaDB on Slave:
+
+CHANGE MASTER TO
+  MASTER_HOST='10.1.0.10',
+  MASTER_USER='replicator',
+  MASTER_PASSWORD='password',
+  MASTER_LOG_FILE='mariadb-bin.000002',
+  MASTER_LOG_POS=659, 
+  MASTER_CONNECT_RETRY=10;
+
+
+
+##################################
+Source:
+https://mariadb.com/kb/en/replication-overview/
+https://mariadb.com/kb/en/setting-up-replication/
