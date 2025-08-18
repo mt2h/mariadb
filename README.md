@@ -122,3 +122,16 @@ show master status;
 ```sql
 SHOW REPLICA STATUS\G;
 ```
+
+### Transform replica to master
+
+```sql
+STOP SLAVE;
+RESET SLAVE ALL;
+```
+
+After activate binary log
+
+```conf
+log-bin = /log/binlog/mariadb-bin.log
+```

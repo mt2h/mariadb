@@ -39,11 +39,13 @@ sleep 10
 # Start MariaDB temporarily as 'mysql' user to create replication user
 echo "Configuring replication..."
 mysql -u root -p"$MYSQL_ROOT_PASSWORD" -S /var/lib/mysql/mysql.sock <<-EOSQL
+STOP SLAVE;
+RESET SLAVE ALL;
 CHANGE MASTER TO
   MASTER_HOST='10.1.0.10',
   MASTER_USER='replicator',
   MASTER_PASSWORD='password',
-  MASTER_LOG_FILE='mariadb-bin.000004',
+  MASTER_LOG_FILE='mariadb-bin.000008',
   MASTER_LOG_POS=344,
   MASTER_CONNECT_RETRY=10;
 START SLAVE;
