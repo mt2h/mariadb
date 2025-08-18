@@ -51,7 +51,7 @@ lower_case_table_name =     1
 
 
 Master Slave Replication:
-Warning: 
+Warning:
 If you already have a running and active Master database with data,
 before starting your replication you have to initialize your slave server
 with a complete dump from your master server. for this you need a mysqldump
@@ -85,7 +85,7 @@ CHANGE MASTER TO
   MASTER_USER='replicator',
   MASTER_PASSWORD='password',
   MASTER_LOG_FILE='mariadb-bin.000002',
-  MASTER_LOG_POS=659, 
+  MASTER_LOG_POS=659,
   MASTER_CONNECT_RETRY=10;
 
 

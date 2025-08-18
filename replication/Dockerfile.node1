@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir -p /var/log/mariadb
 
 # Define the entrypoint so Chrony starts along with MariaDB
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY node1.sh /usr/local/bin/node1.sh
+RUN chmod +x /usr/local/bin/node1.sh
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/node1.sh"]
 CMD ["mysqld"]

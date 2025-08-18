@@ -116,4 +116,9 @@ mariadb -u root -p -S /var/lib/mysql/mysql.sock
 
 ```sql
 SELECT User, Host FROM mysql.user WHERE User='replicator';
+show master status;
+```
+
+```sql
+SHOW REPLICA STATUS\G;
 ```

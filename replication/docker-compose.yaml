@@ -2,7 +2,9 @@ version: '3.9'
 
 services:
   node1:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.node1
     container_name: node1
     networks:
       mariadb_network:
@@ -20,25 +22,26 @@ services:
     cap_add:
       - SYS_TIME
 
-  #node2:
-    #image: mariadb:10.6.20
-    #container_name: node2
-    #networks:
-    #  mariadb_network:
-    #    ipv4_address: 10.1.0.20
-    #environment:
-    #  MYSQL_ROOT_PASSWORD: myrootpassword
-    #  MYSQL_DATABASE: mydatabase
-    #  MYSQL_USER: myuser
-    #  MYSQL_PASSWORD: mypassword
-    #  MYSQL_INITDB_SKIP_TZINFO: "1"
-    #volumes:
-    #  - ./server.cnf:/etc/mysql/conf.d/server.cnf:ro
-    #  - mariadb_data:/var/lib/mysql
-    #  - ./keyfile:/etc/mysql/keyfile:ro
-    #  - ./ssl:/etc/mysql/ssl:ro
-    #ports:
-    #  - "3336:3306"
+  node2:
+    build:
+      context: .
+      dockerfile: Dockerfile.node2
+    container_name: node2
+    networks:
+      mariadb_network:
+        ipv4_address: 10.1.0.20
+    environment:
+      MYSQL_ROOT_PASSWORD: node2
+    volumes:
+      - ./node2.cnf:/etc/mysql/conf.d/server.cnf:ro
+      - node2_data:/data
+      - node2_log:/log
+      - node2_backup:/backup
+      - node2_tools:/tools
+    ports:
+      - "3337:3306"
+    cap_add:
+      - SYS_TIME
 
   #maxscale:
     #image: mariadb:10.6.20
@@ -85,7 +88,10 @@ volumes:
   node1_log:
   node1_backup:
   node1_tools:
-  #node2_data:
+  node2_data:
+  node2_log:
+  node2_backup:
+  node2_tools:
   #max_scale_data:
   #mon_data:
 

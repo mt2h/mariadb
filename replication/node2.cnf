@@ -1,0 +1,18 @@
+[mariadb]
+server-id                   = 10
+bind-address                = 0.0.0.0
+relay-log                   = /log/relaylog/relay-bin.log
+
+[mysqld]
+datadir                     = /data/
+log-bin                     = /log/binlog/mariadb-bin.log
+binlog_format               = MIXED
+log_error                   = /var/log/mariadb/mariadb.log
+log_slave_updates           = 1
+socket                      = /var/lib/mysql/mysql.sock
+innodb_buffer_pool_size     = 1G
+innodb_flush_method         = O_DIRECT
+innodb_file_per_table       = 1
+innodb_data_home_dir        = /data
+innodb_open_files           = 65530
+lower_case_table_names      = 1
