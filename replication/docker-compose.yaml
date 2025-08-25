@@ -32,6 +32,7 @@ services:
         ipv4_address: 10.1.0.20
     environment:
       MYSQL_ROOT_PASSWORD: node2
+      MYSQL_MASTER_PASSWORD: node1
     volumes:
       - ./node2.cnf:/etc/mysql/conf.d/server.cnf:ro
       - node2_data:/data
@@ -42,26 +43,29 @@ services:
       - "3337:3306"
     cap_add:
       - SYS_TIME
+    depends_on:
+      - node1
 
-  #maxscale:
-    #image: mariadb:10.6.20
-    #container_name: maxscale
-    #networks:
-    #  mariadb_network:
-    #    ipv4_address: 10.1.0.50
+  maxscale:
+    image: mariadb/maxscale:24.02
+    container_name: maxscale
+    networks:
+      mariadb_network:
+        ipv4_address: 10.1.0.50
     #environment:
     #  MYSQL_ROOT_PASSWORD: myrootpassword
     #  MYSQL_DATABASE: mydatabase
     #  MYSQL_USER: myuser
     #  MYSQL_PASSWORD: mypassword
     #  MYSQL_INITDB_SKIP_TZINFO: "1"
-    #volumes:
-    #  - ./server.cnf:/etc/mysql/conf.d/server.cnf:ro
-    #  - mariadb_data:/var/lib/mysql
-    #  - ./keyfile:/etc/mysql/keyfile:ro
-    #  - ./ssl:/etc/mysql/ssl:ro
-    #ports:
-    #  - "3336:3306"
+    volumes:
+      - ./maxscale.cnf:/etc/maxscale.cnf:ro
+      #- maxscale_log:/var/log/maxscale
+    ports:
+      - "3338:3306"
+    depends_on:
+      - node1
+      - node2
 
   #monitoring:
     #image: mariadb:10.6.20
@@ -93,6 +97,7 @@ volumes:
   node2_backup:
   node2_tools:
   #max_scale_data:
+  #maxscale_log:
   #mon_data:
 
 networks:

@@ -36,8 +36,14 @@ sleep 5  # wait until MariaDB is ready
 # Create replication user if it doesn't exist
 echo "Creating replication user if not exists..."
 mysql -u root -S /var/lib/mysql/mysql.sock <<-EOSQL
+-- Replication user
 CREATE USER IF NOT EXISTS 'replicator'@'%' IDENTIFIED BY 'password';
 GRANT REPLICATION SLAVE ON *.* TO 'replicator'@'%';
+-- Monitor user for MaxScale
+CREATE USER IF NOT EXISTS 'monitor'@'%' IDENTIFIED BY 'password';
+GRANT REPLICATION CLIENT ON *.* TO 'monitor'@'%';
+GRANT SUPER, RELOAD, PROCESS, SHOW DATABASES, EVENT ON *.* TO 'monitor'@'%';
+-- Apply changes
 FLUSH PRIVILEGES;
 EOSQL
 

@@ -33,20 +33,30 @@ echo "Starting temporary MariaDB instance..."
 gosu mysql mariadbd --skip-networking --socket=/var/lib/mysql/mysql.sock &
 pid=$!
 
-# Wait for MariaDB to start
-sleep 10
+# Wait until node1 (master) is available
+echo "Waiting for node1 (master) to be ready..."
+until mysql -h 10.1.0.10 -u root -p"$MYSQL_MASTER_PASSWORD" -e "SELECT 1;" &>/dev/null; do
+  sleep 2
+done
+
+# Fetch master status dynamically
+echo "Fetching master binlog position from node1..."
+MASTER_STATUS=$(mysql -h 10.1.0.10 -u root -p"$MYSQL_ROOT_PASSWORD" -e "SHOW MASTER STATUS\G")
+MASTER_LOG_FILE=$(echo "$MASTER_STATUS" | grep File: | awk '{print $2}')
+MASTER_LOG_POS=$(echo "$MASTER_STATUS" | grep Position: | awk '{print $2}')
 
 # Start MariaDB temporarily as 'mysql' user to create replication user
 echo "Configuring replication..."
 mysql -u root -p"$MYSQL_ROOT_PASSWORD" -S /var/lib/mysql/mysql.sock <<-EOSQL
+-- Configure replication
 STOP SLAVE;
 RESET SLAVE ALL;
 CHANGE MASTER TO
   MASTER_HOST='10.1.0.10',
   MASTER_USER='replicator',
   MASTER_PASSWORD='password',
-  MASTER_LOG_FILE='mariadb-bin.000008',
-  MASTER_LOG_POS=344,
+  MASTER_LOG_FILE='$MASTER_LOG_FILE',
+  MASTER_LOG_POS=$MASTER_LOG_POS,
   MASTER_CONNECT_RETRY=10;
 START SLAVE;
 EOSQL

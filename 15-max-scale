@@ -1,0 +1,120 @@
+Installing MaxScale on our Max server:
+add MariaDB Repository to max server
+curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash
+
+* If you get "77 error setting certificate verify location..." error, run this command first:
+dnf reinstall ca-certificates
+then try to add MariaDB Repository to max server again.
+
+Now we can Install MaxScale:
+dnf install maxscale
+
+systemctl enable maxscale
+systemctl start maxscale
+
+
+install MariaDB client on Max server:
+curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-10.11"
+dnf install mariadb
+
+############################################################################################
+
+MaxScale Configuration:
+
+first open maxscale.cnf file with vim:
+
+vim /etc/maxscale.cnf
+
+1- first add server1 and server2:
+[server1]
+type=server
+address=10.1.0.10
+port=3306
+protocol=MariaDBBackend
+
+[server2]
+type=server
+address=10.1.0.20
+port=3306
+protocol=MariaDBBackend
+
+
+2- configure MariaDB Monitor under Mariadb-Monitor tag:
+[MariaDB-Monitor]
+type=monitor
+module=mariadbmon
+servers=server1,server2
+user=monitor
+password=password
+monitor_inverval=2s
+
+
+4- add our read write splitter to route our write request to master and read to slave:
+[Read-Write-Service]
+type=service
+router=readwritesplit
+servers=server1,server2
+user=service_user
+password=password
+max_slave_connections=100
+
+
+5-Configure read write listener:
+[Read-Write-Listener]
+type=listener
+service=Read-Write-Service
+protocol=MariaDBClient
+port=3306
+
+7- comment out read only sections (service and listener)
+
+
+6- save and exit vim. Open the Terminal of you master server (node1) and login to MariaDB
+and create a monitor user:
+CREATE USER 'monitor'@'%' IDENTIFIED BY 'password';
+GRANT Replication client ON *.* TO 'monitor'@'%';
+GRANT SUPER, RELOAD, PROCESS, SHOW DATABASES, EVENT ON *.* TO 'monitor'@'%';
+
+
+7- create a service user as well:
+CREATE USER 'service_user'@'%' IDENTIFIED BY 'password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'service_user'@'%';
+
+* You don't need to create a service and monitor user on node 2, because node2 is our replica, all changes will be replicate on
+  node2.
+
+######################################################################################
+
+Allow traffic on the port 3306:
+First on max server:
+
+sudo firewall-cmd --add-port=3306/tcp --permanent
+sudo firewall-cmd --reload
+
+then run these commands on Node 1 and node 2:
+sudo firewall-cmd --add-rich-rule='rule family="ipv4" source address="10.1.0.50" port protocol="tcp" port="3306" accept' --permanent
+sudo firewall-cmd --reload
+
+Now on Max server restart maxScale service:
+systemctl restart maxscale
+
+######################################################################################
+
+install MariaDB client on Mon server:
+curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-10.11"
+
+* If you get "77 error setting certificate verify location..." error, run this command first:
+dnf reinstall ca-certificates
+then try to add MariaDB Repository to mon server again.
+
+install MariaDB client on Max server:
+dnf install mariadb
+
+
+######################################################################################
+
+For connection test we need a test user. Go to Node 1 and create this user:
+create user 'test'@'%' identified by 'password';
+GRANT ALL PRIVILEGES ON replica_test.* TO 'test'@'%';
+
+then from Mon you can try to connect to maxscale.
