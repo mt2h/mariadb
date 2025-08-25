@@ -24,14 +24,26 @@ fi
 echo "Starting Chrony..."
 chronyd -d -f /etc/chrony/chrony.conf &
 
-# Wait for Chrony to synchronize
-sleep 2
+# Wait until Chrony is synchronized
+echo "Waiting for Chrony to synchronize..."
+until chronyc tracking | grep -q "Leap status     : Normal"; do
+  sleep 1
+done
+
+echo "Chrony is synchronized!"
 
 # Start MariaDB temporarily as 'mysql' user to create replication user
 echo "Starting MariaDB temporarily to create replication user..."
 gosu mysql mysqld --skip-networking --skip-bind-address &
 pid="$!"
-sleep 5  # wait until MariaDB is ready
+
+# Wait until MariaDB is ready to accept connections
+echo "Waiting for MariaDB to be ready..."
+until mysql -u root -S /var/lib/mysql/mysql.sock -e "SELECT 1;" &>/dev/null; do
+  sleep 1
+done
+
+echo "MariaDB is ready!"
 
 # Create replication user if it doesn't exist
 echo "Creating replication user if not exists..."

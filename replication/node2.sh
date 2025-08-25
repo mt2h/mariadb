@@ -25,8 +25,13 @@ fi
 echo "Starting Chrony..."
 chronyd -d -f /etc/chrony/chrony.conf &
 
-# Wait for Chrony to synchronize
-sleep 2
+# Wait until Chrony is synchronized
+echo "Waiting for Chrony to synchronize..."
+until chronyc tracking | grep -q "Leap status     : Normal"; do
+  sleep 1
+done
+
+echo "Chrony is synchronized!"
 
 # Start MariaDB in the background temporarily
 echo "Starting temporary MariaDB instance..."
@@ -41,7 +46,7 @@ done
 
 # Fetch master status dynamically
 echo "Fetching master binlog position from node1..."
-MASTER_STATUS=$(mysql -h 10.1.0.10 -u root -p"$MYSQL_ROOT_PASSWORD" -e "SHOW MASTER STATUS\G")
+MASTER_STATUS=$(mysql -h 10.1.0.10 -u root -p"$MYSQL_MASTER_PASSWORD" -e "SHOW MASTER STATUS\G")
 MASTER_LOG_FILE=$(echo "$MASTER_STATUS" | grep File: | awk '{print $2}')
 MASTER_LOG_POS=$(echo "$MASTER_STATUS" | grep Position: | awk '{print $2}')
 
