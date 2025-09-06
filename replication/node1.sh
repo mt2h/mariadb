@@ -51,6 +51,9 @@ mysql -u root -S /var/lib/mysql/mysql.sock <<-EOSQL
 -- Replication user
 CREATE USER IF NOT EXISTS 'replicator'@'%' IDENTIFIED BY 'password';
 GRANT REPLICATION SLAVE ON *.* TO 'replicator'@'%';
+-- Service maxscale service
+CREATE USER IF NOT EXISTS 'service_user'@'%' IDENTIFIED BY 'password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'service_user'@'%';
 -- Monitor user for MaxScale
 CREATE USER IF NOT EXISTS 'monitor'@'%' IDENTIFIED BY 'password';
 GRANT REPLICATION CLIENT ON *.* TO 'monitor'@'%';

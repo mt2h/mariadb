@@ -59,10 +59,12 @@ services:
     #  MYSQL_PASSWORD: mypassword
     #  MYSQL_INITDB_SKIP_TZINFO: "1"
     volumes:
-      - ./maxscale.cnf:/etc/maxscale.cnf:ro
+      - ./maxscale/maxscale.cnf:/etc/maxscale.cnf.d/maxscale.cnf:ro
+      #- maxscale_data:/var/lib/maxscale
       #- maxscale_log:/var/log/maxscale
     ports:
       - "3338:3306"
+      #- "8989:8989"
     depends_on:
       - node1
       - node2
@@ -96,6 +98,7 @@ volumes:
   node2_log:
   node2_backup:
   node2_tools:
+  maxscale_data:
   #max_scale_data:
   #maxscale_log:
   #mon_data:

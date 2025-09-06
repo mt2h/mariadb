@@ -1,0 +1,28 @@
+# Use a lightweight Debian base image
+FROM debian:bullseye-slim
+
+# Install required dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    lsb-release \
+    ca-certificates \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add the MariaDB MaxScale repository
+RUN curl -LsS https://downloads.mariadb.com/MaxScale/24.02/latest/debian/repo_setup.sh | bash
+
+# Install MaxScale
+RUN apt-get update && apt-get install -y maxscale && rm -rf /var/lib/apt/lists/*
+
+# Create a non-root user for MaxScale
+RUN useradd -u 1001 maxscaleuser && \
+    mkdir -p /var/lib/maxscale && \
+    chown -R maxscaleuser:maxscaleuser /var/lib/maxscale
+
+# Switch to non-root user
+USER maxscaleuser
+
+# Run MaxScale directly (no Monit)
+CMD ["maxscale", "-f", "/etc/maxscale.cnf"]
