@@ -136,3 +136,9 @@ After activate binary log
 ```conf
 log-bin = /log/binlog/mariadb-bin.log
 ```
+
+## MaxScale
+
+```bash
+docker exec maxscale maxctrl list servers
+```

@@ -39,14 +39,14 @@ gosu mysql mariadbd --skip-networking --socket=/var/lib/mysql/mysql.sock &
 pid=$!
 
 # Wait until node1 (master) is available
-echo "Waiting for node1 (master) to be ready..."
-until mysql -h 10.1.0.10 -u root -p"$MYSQL_MASTER_PASSWORD" -e "SELECT 1;" &>/dev/null; do
+until mysql -h 10.1.0.10 -u monitor -ppassword -S /var/lib/mysql/mysql.sock -e "SELECT 1;" &>/dev/null; do
+  echo "Waiting for master to be ready..."
   sleep 2
 done
 
 # Fetch master status dynamically
 echo "Fetching master binlog position from node1..."
-MASTER_STATUS=$(mysql -h 10.1.0.10 -u root -p"$MYSQL_MASTER_PASSWORD" -e "SHOW MASTER STATUS\G")
+MASTER_STATUS=$(mysql -h 10.1.0.10 -u monitor -ppassword -S /var/lib/mysql/mysql.sock -e "SHOW MASTER STATUS\G")
 MASTER_LOG_FILE=$(echo "$MASTER_STATUS" | grep File: | awk '{print $2}')
 MASTER_LOG_POS=$(echo "$MASTER_STATUS" | grep Position: | awk '{print $2}')
 

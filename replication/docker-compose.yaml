@@ -47,47 +47,21 @@ services:
       - node1
 
   maxscale:
-    image: mariadb/maxscale:24.02
+    build:
+      context: .
+      dockerfile: Dockerfile.maxscale
     container_name: maxscale
+    command: ["maxscale", "-d", "-l", "stdout"]
+    ports:
+      - "3338:3306"
     networks:
       mariadb_network:
         ipv4_address: 10.1.0.50
-    #environment:
-    #  MYSQL_ROOT_PASSWORD: myrootpassword
-    #  MYSQL_DATABASE: mydatabase
-    #  MYSQL_USER: myuser
-    #  MYSQL_PASSWORD: mypassword
-    #  MYSQL_INITDB_SKIP_TZINFO: "1"
     volumes:
-      - ./maxscale/maxscale.cnf:/etc/maxscale.cnf.d/maxscale.cnf:ro
-      #- maxscale_data:/var/lib/maxscale
-      #- maxscale_log:/var/log/maxscale
-    ports:
-      - "3338:3306"
-      #- "8989:8989"
+      - ./maxscale.cnf:/etc/maxscale.cnf:ro
     depends_on:
       - node1
       - node2
-
-  #monitoring:
-    #image: mariadb:10.6.20
-    #container_name: monitoring
-    #networks:
-    #  mariadb_network:
-    #    ipv4_address: 10.1.0.60
-    #environment:
-    #  MYSQL_ROOT_PASSWORD: myrootpassword
-    #  MYSQL_DATABASE: mydatabase
-    #  MYSQL_USER: myuser
-    #  MYSQL_PASSWORD: mypassword
-    #  MYSQL_INITDB_SKIP_TZINFO: "1"
-    #volumes:
-    #  - ./server.cnf:/etc/mysql/conf.d/server.cnf:ro
-    #  - mariadb_data:/var/lib/mysql
-    #  - ./keyfile:/etc/mysql/keyfile:ro
-    #  - ./ssl:/etc/mysql/ssl:ro
-    #ports:
-    #  - "3336:3306"
 
 volumes:
   node1_data:
@@ -99,13 +73,11 @@ volumes:
   node2_backup:
   node2_tools:
   maxscale_data:
-  #max_scale_data:
-  #maxscale_log:
-  #mon_data:
 
 networks:
   mariadb_network:
     driver: bridge
     ipam:
+      driver: default
       config:
         - subnet: 10.1.0.0/24
