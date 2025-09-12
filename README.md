@@ -142,3 +142,15 @@ log-bin = /log/binlog/mariadb-bin.log
 ```bash
 docker exec maxscale maxctrl list servers
 ```
+
+## Check MaxScale
+
+```bash
+docker exec -ti monitor bash
+docker exec -ti monitor mariadb  -h 10.1.0.50 -u test -p -S /var/lib/mysql/mysql.sock replica_test
+```
+
+```sql
+#view response from
+select @@hostname;
+```

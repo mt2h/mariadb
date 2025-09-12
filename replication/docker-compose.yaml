@@ -63,6 +63,17 @@ services:
       - node1
       - node2
 
+  monitor:
+    image: mariadb:10.6.20
+    container_name: monitor
+    command: tail -f /dev/null
+    networks:
+      mariadb_network:
+        ipv4_address: 10.1.0.60
+    tty: true
+    depends_on:
+      - maxscale
+
 volumes:
   node1_data:
   node1_log:
