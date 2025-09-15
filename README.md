@@ -137,20 +137,51 @@ After activate binary log
 log-bin = /log/binlog/mariadb-bin.log
 ```
 
+## Run for listen events in node2
+
+```sql
+CREATE USER IF NOT EXISTS 'replicator'@'%' IDENTIFIED BY 'password';
+GRANT REPLICATION SLAVE ON *.* TO 'replicator'@'%';
+-- Service maxscale service
+CREATE USER IF NOT EXISTS 'service_user'@'%' IDENTIFIED BY 'password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'service_user'@'%';
+-- Monitor user for MaxScale
+CREATE USER IF NOT EXISTS 'monitor'@'%' IDENTIFIED BY 'password';
+GRANT REPLICATION CLIENT ON *.* TO 'monitor'@'%';
+GRANT SUPER, RELOAD, PROCESS, SHOW DATABASES, EVENT ON *.* TO 'monitor'@'%';
+-- Apply changes
+FLUSH PRIVILEGES;
+```
+
 ## MaxScale
 
 ```bash
 docker exec maxscale maxctrl list servers
 ```
 
+## Run for listen events in node2
+
+```sql
+-- Test user
+CREATE DATABASE IF NOT EXISTS replica_test;
+CREATE USER IF NOT EXISTS 'test'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON replica_test.* TO 'test'@'%';
+-- Apply changes
+FLUSH PRIVILEGES;
+SELECT User, Host FROM mysql.user WHERE User='test';
+```
+
 ## Check MaxScale
 
 ```bash
-docker exec -ti monitor bash
 docker exec -ti monitor mariadb  -h 10.1.0.50 -u test -p -S /var/lib/mysql/mysql.sock replica_test
 ```
+
+## Run for listen events in MaxScale
 
 ```sql
 #view response from
 select @@hostname;
+USE replica_test;
+CREATE TABLE tab1 (id INT);
 ```

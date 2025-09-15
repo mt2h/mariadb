@@ -60,10 +60,6 @@ GRANT REPLICATION CLIENT ON *.* TO 'monitor'@'%';
 GRANT SUPER, RELOAD, PROCESS, SHOW DATABASES, EVENT ON *.* TO 'monitor'@'%';
 -- Apply changes
 FLUSH PRIVILEGES;
-CREATE DATABASE IF NOT EXISTS replica_test;
-CREATE USER IF NOT EXISTS 'test'@'%' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON replica_test.* TO 'test'@'%';
-FLUSH PRIVILEGES;
 EOSQL
 
 # Stop temporary server

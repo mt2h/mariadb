@@ -55,7 +55,7 @@ echo "Configuring replication..."
 mysql -u root -p"$MYSQL_ROOT_PASSWORD" -S /var/lib/mysql/mysql.sock <<-EOSQL
 -- Configure replication
 STOP SLAVE;
-RESET SLAVE ALL;
+#RESET SLAVE ALL;
 CHANGE MASTER TO
   MASTER_HOST='10.1.0.10',
   MASTER_USER='replicator',

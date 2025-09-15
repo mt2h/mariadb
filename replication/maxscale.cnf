@@ -13,6 +13,8 @@
 threads=auto
 log_debug=1
 log_info=1
+logdir=/dev/null
+syslog=1
 
 ############################################################################
 # Server definitions                                                       #
