@@ -185,3 +185,14 @@ select @@hostname;
 USE replica_test;
 CREATE TABLE tab1 (id INT);
 ```
+
+## MaxScale
+
+```bash
+maxctrl list servers
+maxctrl list services
+maxctrl list sessions
+maxctrl set server server2 maintenance
+maxctrl clear server server2 maintenance
+maxctrl list monitors
+```
