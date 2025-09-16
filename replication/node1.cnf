@@ -1,6 +1,7 @@
 [mysqld]
 server-id                   = 1
 bind-address                = 0.0.0.0
+gtid_domain_id              = 1
 datadir                     = /data/
 log-bin                     = /log/binlog/mariadb-bin.log
 binlog_format               = MIXED

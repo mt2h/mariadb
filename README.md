@@ -120,6 +120,14 @@ SELECT User, Host FROM mysql.user WHERE User='service_user';
 show master status;
 ```
 
+In Master
+
+```sql
+SHOW MASTER STATUS\G;
+```
+
+In Slave
+
 ```sql
 SHOW REPLICA STATUS\G;
 ```
@@ -195,4 +203,21 @@ maxctrl list sessions
 maxctrl set server server2 maintenance
 maxctrl clear server server2 maintenance
 maxctrl list monitors
+```
+## GTID
+
+Master
+
+```sql
+-- File and Position Binlog
+select binlog_gtid_pos('mariadb-bin.000008', 360); --return 1-1-8,0-1-37
+```
+
+Slave
+
+```sql
+STOP SLAVE;
+set global gtid_slave_pos = '1-1-8,0-1-37';
+change master to master_use_gtid=slave_pos;
+START SLAVE;
 ```

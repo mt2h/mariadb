@@ -2,6 +2,7 @@
 server-id                   = 10
 bind-address                = 0.0.0.0
 relay-log                   = /log/relaylog/relay-bin.log
+gtid_domain_id              = 10
 datadir                     = /data/
 log-bin                     = /log/binlog/mariadb-bin.log
 binlog_format               = MIXED

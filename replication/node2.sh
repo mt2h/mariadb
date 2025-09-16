@@ -50,18 +50,27 @@ MASTER_STATUS=$(mysql -h 10.1.0.10 -u monitor -ppassword -S /var/lib/mysql/mysql
 MASTER_LOG_FILE=$(echo "$MASTER_STATUS" | grep File: | awk '{print $2}')
 MASTER_LOG_POS=$(echo "$MASTER_STATUS" | grep Position: | awk '{print $2}')
 
+echo "Master log file: $MASTER_LOG_FILE"
+echo "Master log pos : $MASTER_LOG_POS"
+
+MASTER_GTID=$(mysql -h 10.1.0.10 -u monitor -ppassword -S /var/lib/mysql/mysql.sock \
+  -N -B -e "SELECT BINLOG_GTID_POS('$MASTER_LOG_FILE', $MASTER_LOG_POS);" )
+
+echo "Master GTID position: $MASTER_GTID"
+
 # Start MariaDB temporarily as 'mysql' user to create replication user
 echo "Configuring replication..."
 mysql -u root -p"$MYSQL_ROOT_PASSWORD" -S /var/lib/mysql/mysql.sock <<-EOSQL
 -- Configure replication
 STOP SLAVE;
-#RESET SLAVE ALL;
+SET GLOBAL gtid_slave_pos = '$MASTER_GTID';
 CHANGE MASTER TO
   MASTER_HOST='10.1.0.10',
   MASTER_USER='replicator',
   MASTER_PASSWORD='password',
   MASTER_LOG_FILE='$MASTER_LOG_FILE',
   MASTER_LOG_POS=$MASTER_LOG_POS,
+  MASTER_USE_GTID=slave_pos,
   MASTER_CONNECT_RETRY=10;
 START SLAVE;
 EOSQL
