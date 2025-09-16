@@ -155,10 +155,15 @@ CREATE USER IF NOT EXISTS 'service_user'@'%' IDENTIFIED BY 'password';
 GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'service_user'@'%';
 -- Monitor user for MaxScale
 CREATE USER IF NOT EXISTS 'monitor'@'%' IDENTIFIED BY 'password';
+GRANT REPLICATION SLAVE ON *.* TO 'monitor'@'%';
 GRANT REPLICATION CLIENT ON *.* TO 'monitor'@'%';
 GRANT SUPER, RELOAD, PROCESS, SHOW DATABASES, EVENT ON *.* TO 'monitor'@'%';
+GRANT READ_ONLY ADMIN ON *.* TO 'monitor'@'%';
+GRANT SELECT ON mysql.* TO 'monitor'@'%';
 -- Apply changes
 FLUSH PRIVILEGES;
+-- Remove anonymous users
+DELETE FROM mysql.user WHERE User='';
 ```
 
 ## MaxScale
@@ -220,4 +225,26 @@ STOP SLAVE;
 set global gtid_slave_pos = '1-1-8,0-1-37';
 change master to master_use_gtid=slave_pos;
 START SLAVE;
+```
+
+## Switchover
+
+```bash
+# new master
+maxctrl call command mariadbmon switchover MariaDB-Monitor server2
+maxctrl list servers
+```
+
+## Failover
+
+```bash
+maxctrl call command mariadbmon failover MariaDB-Monitor server2
+maxctrl list servers
+```
+
+Manual Rejoin
+
+```bash
+maxctrl call command mariadbmon rejoin MariaDB-Monitor server1
+maxctrl list servers
 ```

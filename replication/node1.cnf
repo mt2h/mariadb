@@ -1,9 +1,11 @@
 [mysqld]
 server-id                   = 1
 bind-address                = 0.0.0.0
+relay-log                   = /log/relaylog/relay-bin.log
 gtid_domain_id              = 1
 datadir                     = /data/
 log-bin                     = /log/binlog/mariadb-bin.log
+log_slave_updates           = 1
 binlog_format               = MIXED
 log_error                   = /var/log/mariadb/mariadb.log
 socket                      = /var/lib/mysql/mysql.sock

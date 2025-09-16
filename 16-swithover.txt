@@ -1,0 +1,16 @@
+On node1:
+
+GRANT READ_ONLY ADMIN ON *.* TO 'monitor'@'%';
+GRANT process on *.* TO 'monitor'@'%';
+GRANT SELECT ON mysql.* TO 'monitor'@'%';
+GRANT REPLICATION SLAVE ON *.* TO 'monitor'@'%';
+
+DROP USER ''@'localhost';
+
+
+On node2:
+sudo firewall-cmd --add-rich-rule='rule family="ipv4" source address="10.1.0.10" port protocol="tcp" port="3306" accept' --permanent
+sudo firewall-cmd --reload
+
+
+Don't forget to take a snapshot of node1, node2 before starting the switchover

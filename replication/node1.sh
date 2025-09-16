@@ -56,10 +56,15 @@ CREATE USER IF NOT EXISTS 'service_user'@'%' IDENTIFIED BY 'password';
 GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'service_user'@'%';
 -- Monitor user for MaxScale
 CREATE USER IF NOT EXISTS 'monitor'@'%' IDENTIFIED BY 'password';
+GRANT REPLICATION SLAVE ON *.* TO 'monitor'@'%';
 GRANT REPLICATION CLIENT ON *.* TO 'monitor'@'%';
 GRANT SUPER, RELOAD, PROCESS, SHOW DATABASES, EVENT ON *.* TO 'monitor'@'%';
+GRANT READ_ONLY ADMIN ON *.* TO 'monitor'@'%';
+GRANT SELECT ON mysql.* TO 'monitor'@'%';
 -- Apply changes
 FLUSH PRIVILEGES;
+-- Remove anonymous users
+DELETE FROM mysql.user WHERE User='';
 EOSQL
 
 # Stop temporary server

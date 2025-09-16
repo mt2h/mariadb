@@ -68,7 +68,8 @@ monitor_interval=2s
 # https://mariadb.com/kb/en/mariadb-maxscale-2402-maxscale-2402-mariadb-monitor/#cluster-manipulation-grants     #
 ##################################################################################################################
 # auto_failover=true
-# auto_rejoin=true
+# failtcount=3
+auto_rejoin=true
 # enforce_simple_topology=true
 # replication_user=<username used for replication>
 # replication_password=<password used for replication>
