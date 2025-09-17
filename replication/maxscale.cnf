@@ -11,10 +11,25 @@
 #######################################################################################################
 [maxscale]
 threads=auto
-log_debug=1
-log_info=1
+maxlog=true
+#log_debug=0
+log_info=true
+log_warning=true
 logdir=/dev/null
-syslog=1
+syslog=false
+
+####################################################################################################################################################################################################################
+# Admin interface                                                                                                                                                                                                  #
+#                                                                                                                                                                                                                  #
+# The admin interface is enabled by default.                                                                                                                                                                       #
+# It is recommended to change the default password.                                                                                                                                                                #
+# The admin interface is described here:                                                                                                                                                                           #
+# https://mariadb.com/docs/maxscale/maxscale-archive/archive/mariadb-maxscale-24-02/maxscale-24-02getting-started/mariadb-maxscale-2402-maxscale-2402-mariadb-maxscale-configuration-guide#rest-api-configuration/ #
+####################################################################################################################################################################################################################
+admin_host=0.0.0.0
+admin_port=8989
+admin_secure_gui=false
+admin_auth=true
 
 ############################################################################
 # Server definitions                                                       #

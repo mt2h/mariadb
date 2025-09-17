@@ -54,6 +54,7 @@ services:
     command: ["maxscale", "-d", "-l", "stdout"]
     ports:
       - "3338:3306"
+      - "8989:8989"
     networks:
       mariadb_network:
         ipv4_address: 10.1.0.50
